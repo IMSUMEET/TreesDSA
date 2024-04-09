@@ -12,22 +12,98 @@
 
 ## Traversal in Binary Search Tree
 
+- All traversal code in Trees.java file.
+
 1. Preorder
 
 - Root --> Left --> Right
 
+  ```bash
+  private void preOrder(Node root) {
+      if (root == null) {
+          return;
+      }
+
+      System.out.print(root.data + " ");
+      preOrder(root.leftNode);
+      preOrder(root.rightNode);
+  }
+  ```
+
 2. Inorder
 
 - Left --> Root --> Right
+
+  ```bash
+  private void inOrder(Node root) {
+      if (root == null) {
+          return;
+      }
+
+      inOrder(root.leftNode);
+      System.out.print(root.data + " ");
+      inOrder(root.rightNode);
+  }
+  ```
+
 - [inorder]() traversal of a BST will always gives you a [sorted sequence]().
 
 3. Postorder
 
--
+- Left --> Right --> Root
+
+  ```bash
+  private void postOrder(Node root) {
+      if (root == null) {
+          return;
+      }
+
+      postOrder(root.leftNode);
+      postOrder(root.rightNode);
+      System.out.print(root.data + " ");
+  }
+  ```
 
 4. Level Order
 
--
+- cannot use recurssion. [BFS]()
+- data is printed level wise
+- 1 2 3 4 5 6
+  ![alt text](image-2.png)
+
+  ```bash
+    private void levelOrder(Node root) {
+
+        if (root == null)
+            return;
+
+        Queue<Node> queue = new LinkedList<Node>();
+        queue.add(root);
+        queue.add(null);
+
+        while (!queue.isEmpty()) {
+            Node top = queue.remove();
+            if (top == null) {
+                System.out.println();
+                if (queue.isEmpty()) {
+                    break;
+                } else {
+                    queue.add(null);
+                }
+            } else {
+                System.out.print(top.data);
+
+                if (top.leftNode != null) {
+                    queue.add(top.leftNode);
+                }
+
+                if (top.rightNode != null) {
+                    queue.add(top.rightNode);
+                }
+            }
+        }
+    }
+  ```
 
 ## Strategy
 
