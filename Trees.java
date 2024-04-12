@@ -91,6 +91,53 @@ public class Trees {
                 }
             }
         }
+
+        private int heightOfTree(Node root) {
+            if (root == null)
+                return 0;
+
+            return 1 + Math.max(heightOfTree(root.leftNode), heightOfTree(root.rightNode));
+        }
+
+        // snapdeal and adobe
+        // O(n^2)
+        private int diameterOfTree(Node root) {
+            if (root == null)
+                return 0;
+
+            int leftSubtree = diameterOfTree(root.leftNode);
+            int rightSubtree = diameterOfTree(root.rightNode);
+            int diameterFromRoot = heightOfTree(root.leftNode) + heightOfTree(root.rightNode) + 1;
+
+            return Math.max(Math.max(leftSubtree, rightSubtree), diameterFromRoot);
+        }
+
+        // O(n)
+        private static class TreeInfo {
+            int height;
+            int diameter;
+
+            public TreeInfo(int height, int diameter) {
+                this.height = height;
+                this.diameter = diameter;
+            }
+
+        }
+
+        private TreeInfo diameterOfTreeOptimized(Node root) {
+            if (root == null)
+                return new TreeInfo(0, 0);
+
+            TreeInfo leftInfo = diameterOfTreeOptimized(root.leftNode);
+            TreeInfo rightInfo = diameterOfTreeOptimized(root.rightNode);
+
+            int currheight = Math.max(leftInfo.height, rightInfo.height) + 1;
+            int currdiameter = Math.max(Math.max(leftInfo.diameter, rightInfo.diameter),
+                    leftInfo.height + rightInfo.height + 1);
+
+            return new TreeInfo(currheight, currdiameter);
+
+        }
     }
 
     public static void main(String[] args) {
@@ -111,5 +158,15 @@ public class Trees {
 
         System.out.print("\n\nLevelOrder\n");
         tree.levelOrder(root);
+
+        System.out.print("\n\nHeight of Tree\n");
+        System.out.println(tree.heightOfTree(root));
+
+        System.out.print("\n\nDiameter Of tree\n");
+        System.out.println(tree.diameterOfTree(root));
+
+        System.out.print("\n\nDiameter Of tree\n");
+        System.out.println(tree.diameterOfTreeOptimized(root).diameter);
+
     }
 }
