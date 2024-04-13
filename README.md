@@ -278,6 +278,8 @@ private static void printRoot2LeafPaths(Node root, ArrayList<Integer> path) {
 
 ## -------------------- BINARY TREES ----------------
 
+![alt text](image-2.png)
+
 ### Build binary tree when nodes given in preorder fashion
 
 ```bash
