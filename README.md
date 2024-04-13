@@ -10,7 +10,7 @@
 - i.e., O(logn) in balanced binary tree.
 - O(n) in skewed trees
 
-## Traversal in Binary Search Tree
+## Traversal in Binary Search Tree and Binary Tree in general
 
 - All traversal code in Trees.java file.
 
@@ -251,5 +251,189 @@ private static void printInRange(Node root, int X, int Y) {
     } else {
         printInRange(root.rightNode, X, Y);
     }
+}
+```
+
+### Print Paths from Root to leaf nodes
+
+```bash
+private static void printRoot2LeafPaths(Node root, ArrayList<Integer> path) {
+
+    if (root == null) {
+        return;
+    }
+
+    path.add(root.data);
+
+    if (root.leftNode == null && root.rightNode == null) {
+        System.out.println(path);
+    } else {
+        printRoot2LeafPaths(root.leftNode, path);
+        printRoot2LeafPaths(root.rightNode, path);
+    }
+
+    path.remove(path.size() - 1);
+}
+```
+
+## -------------------- BINARY TREES ----------------
+
+### Build binary tree when nodes given in preorder fashion
+
+```bash
+int[] nodes = { 1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1 };
+BinaryTree tree = new BinaryTree();
+Node root = tree.buildTree(nodes);
+```
+
+```bash
+private Node buildTree(int[] nodes) {
+    idx++;
+    if (nodes[idx] == -1) {
+        return null;
+    }
+
+    Node newNode = new Node(nodes[idx]);
+    newNode.leftNode = buildTree(nodes);
+    newNode.rightNode = buildTree(nodes);
+
+    return newNode;
+}
+```
+
+### Height of a Binary Tree
+
+```bash
+private int heightOfTree(Node root) {
+    if (root == null)
+        return 0;
+
+    return 1 + Math.max(heightOfTree(root.leftNode), heightOfTree(root.rightNode));
+}
+```
+
+## Find Diameter of a Tree
+
+```bash
+# snapdeal and adobe
+# ---------- O(n^2) ----------
+private int diameterOfTree(Node root) {
+    if (root == null)
+        return 0;
+
+    int leftSubtree = diameterOfTree(root.leftNode);
+    int rightSubtree = diameterOfTree(root.rightNode);
+    int diameterFromRoot = heightOfTree(root.leftNode) + heightOfTree(root.rightNode) + 1;
+
+    return Math.max(Math.max(leftSubtree, rightSubtree), diameterFromRoot);
+}
+
+# ---------- O(n) ----------
+# class to store TreeInfo
+private static class TreeInfo {
+    int height;
+    int diameter;
+
+    public TreeInfo(int height, int diameter) {
+        this.height = height;
+        this.diameter = diameter;
+    }
+
+}
+
+private TreeInfo diameterOfTreeOptimized(Node root) {
+    if (root == null)
+        return new TreeInfo(0, 0);
+
+    TreeInfo leftInfo = diameterOfTreeOptimized(root.leftNode);
+    TreeInfo rightInfo = diameterOfTreeOptimized(root.rightNode);
+
+    int currheight = Math.max(leftInfo.height, rightInfo.height) + 1;
+    int currdiameter = Math.max(Math.max(leftInfo.diameter, rightInfo.diameter),
+            leftInfo.height + rightInfo.height + 1);
+
+    return new TreeInfo(currheight, currdiameter);
+
+}
+```
+
+## Is given subTree a part of RootTree
+
+```bash
+# --------- helper function ---------
+private boolean isIdentical(Node root, Node subRoot) {
+
+    if (root == null && subRoot == null)
+        return true;
+
+    if (root == null || subRoot == null)
+        return false;
+
+    if (root.data == subRoot.data) {
+        return isIdentical(root.leftNode, subRoot.leftNode) && isIdentical(root.rightNode, subRoot.rightNode);
+    }
+
+    return false;
+}
+
+# --------- main function ---------
+private boolean isSubtree(Node root, Node subRoot) {
+    if (subRoot == null)
+        return true;
+
+    if (root == null)
+        return false;
+
+    if (root.data == subRoot.data) {
+        if (isIdentical(root, subRoot)) {
+            return true;
+        }
+    }
+
+    return isSubtree(root.leftNode, subRoot) || isSubtree(root.rightNode, subRoot);
+
+}
+```
+
+## Sum of all nodes values at level K
+
+[HINT: ~ level order traversal]()
+
+```bash
+private int sumAtLevelK(Node root, int k) {
+    if (root == null)
+        return 0;
+
+    if (k == 1) {
+        return root.data;
+    }
+
+    Queue<Node> queue = new LinkedList<Node>();
+    queue.add(root);
+    queue.add(null);
+
+    int sum = 0;
+    int level = 1;
+    while (!queue.isEmpty()) {
+        Node top = queue.remove();
+
+        if (top == null) {
+            level++;
+            if (level == k + 1) {
+                return sum;
+            }
+            sum = 0;
+            queue.add(null);
+        } else {
+            sum += top.data;
+            if (top.leftNode != null)
+                queue.add(top.leftNode);
+            if (top.rightNode != null)
+                queue.add(top.rightNode);
+        }
+    }
+
+    return sum;
+
 }
 ```

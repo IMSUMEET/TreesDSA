@@ -15,7 +15,7 @@ public class Trees {
     }
 
     static class BinaryTree {
-        static int idx = -1;
+        private int idx = -1;
 
         private Node buildTree(int[] nodes) {
             idx++;
@@ -113,6 +113,7 @@ public class Trees {
         }
 
         // O(n)
+        // class to store TreeInfo
         private static class TreeInfo {
             int height;
             int diameter;
@@ -138,6 +139,78 @@ public class Trees {
             return new TreeInfo(currheight, currdiameter);
 
         }
+
+        // checking if given tree a subTree of Main Tree
+        private boolean isIdentical(Node root, Node subRoot) {
+
+            if (root == null && subRoot == null)
+                return true;
+
+            if (root == null || subRoot == null)
+                return false;
+
+            if (root.data == subRoot.data) {
+                return isIdentical(root.leftNode, subRoot.leftNode) && isIdentical(root.rightNode, subRoot.rightNode);
+            }
+
+            return false;
+        }
+
+        private boolean isSubtree(Node root, Node subRoot) {
+            if (subRoot == null)
+                return true;
+
+            if (root == null)
+                return false;
+
+            if (root.data == subRoot.data) {
+                if (isIdentical(root, subRoot)) {
+                    return true;
+                }
+            }
+
+            return isSubtree(root.leftNode, subRoot) || isSubtree(root.rightNode, subRoot);
+
+        }
+
+        // Sum of nodes at Level K (~ level order traversal)
+        private int sumAtLevelK(Node root, int k) {
+            if (root == null)
+                return 0;
+
+            if (k == 1) {
+                return root.data;
+            }
+
+            Queue<Node> queue = new LinkedList<Node>();
+            queue.add(root);
+            queue.add(null);
+
+            int sum = 0;
+            int level = 1;
+            while (!queue.isEmpty()) {
+                Node top = queue.remove();
+
+                if (top == null) {
+                    level++;
+                    if (level == k + 1) {
+                        return sum;
+                    }
+                    sum = 0;
+                    queue.add(null);
+                } else {
+                    sum += top.data;
+                    if (top.leftNode != null)
+                        queue.add(top.leftNode);
+                    if (top.rightNode != null)
+                        queue.add(top.rightNode);
+                }
+            }
+
+            return sum;
+
+        }
+
     }
 
     public static void main(String[] args) {
@@ -165,8 +238,21 @@ public class Trees {
         System.out.print("\n\nDiameter Of tree\n");
         System.out.println(tree.diameterOfTree(root));
 
-        System.out.print("\n\nDiameter Of tree\n");
+        System.out.print("\n\nDiameter Of tree Optimized\n");
         System.out.println(tree.diameterOfTreeOptimized(root).diameter);
+
+        int[] nodesSubtree = { 2, 4, -1, -1, 5, -1, -1 };
+        BinaryTree subTree = new BinaryTree();
+        Node subTreeRoot = subTree.buildTree(nodesSubtree);
+
+        System.out.print("\n\nLevelOrder of Subtree\n");
+        subTree.levelOrder(subTreeRoot);
+
+        System.out.println("\n\nIs Subtree of tree\n");
+        System.out.println(tree.isSubtree(root, subTreeRoot));
+
+        System.out.println("\n\nSubOfNodes at level K\n");
+        System.out.println(tree.sumAtLevelK(root, 1));
 
     }
 }
